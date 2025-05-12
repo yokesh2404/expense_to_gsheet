@@ -65,35 +65,64 @@ class _ViewAllExpensesState extends State<ViewAllExpenses> with AppMixins {
                     decColor: Colors.black.withValues(alpha: 0.8),
                   ),
                   padding: EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        data.name ?? "",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            data.name ?? "",
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            getDateFormate(
+                              DateTime.parse(data.date ?? ""),
+                              "dd MMM yyyy",
+                            ),
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+
+                          // Text(
+                          //   "₹ ${data.amount ?? 0}",
+                          //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          //     fontWeight: FontWeight.w400,
+                          //     fontSize: 14,
+                          //     color: Colors.white,
+                          //   ),
+                          // ),
+                        ],
                       ),
-                      Text(
-                        getDateFormate(
-                          DateTime.parse(data.date ?? ""),
-                          "dd MMM yyyy",
+                      TweenAnimationBuilder<double>(
+                        duration: Duration(seconds: 2),
+                        tween: Tween(
+                          begin: 0.0,
+                          end: checkValueDouble(data.amount),
                         ),
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        "₹ ${data.amount ?? 0}",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 14,
-                          color: Colors.white,
-                        ),
+                        builder: (context, value, child) {
+                          return Text(
+                            '₹ ${value.toStringAsFixed(0)}',
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),

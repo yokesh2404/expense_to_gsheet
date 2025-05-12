@@ -3,6 +3,7 @@ import 'package:google_sheets/controller/form_controller.dart';
 import 'package:google_sheets/controller/form_controller_impl.dart';
 import 'package:google_sheets/utils/app_mixins.dart';
 import 'package:google_sheets/utils/extensions.dart';
+import 'package:google_sheets/view/view_all_expenses.dart';
 
 class AddExpenseForm extends StatefulWidget {
   const AddExpenseForm({super.key});
@@ -141,49 +142,78 @@ class _AddExpenseFormState extends State<AddExpenseForm> with AppMixins {
 
                   Padding(
                     padding: const EdgeInsets.all(24.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Color(0xff121212),
+                    child: Column(
+                      spacing: 10,
+                      children: [
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Color(0xff121212),
+                            ),
+                            fixedSize: WidgetStatePropertyAll(
+                              Size(context.screenWidth, 50),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              isLoading = true;
+                              setState(() {});
+                              await _controller
+                                  .submitForm(
+                                    name: _nameController.text,
+                                    date: getDateFormate(
+                                      DateTime.now(),
+                                      "dd-MM-yyyy",
+                                    ),
+                                    amount: checkValueInteger(
+                                      _amountController.text,
+                                    ),
+                                  )
+                                  .then((_) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text("Successfulle added!!"),
+                                      ),
+                                    );
+                                    _nameController.clear();
+                                    _amountController.clear();
+                                  });
+                              isLoading = false;
+                              setState(() {});
+                            }
+                          },
+                          child: Text(
+                            "Submit",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.white),
+                          ),
                         ),
-                        fixedSize: WidgetStatePropertyAll(
-                          Size(context.screenWidth, 50),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Color(0xff121212),
+                            ),
+                            fixedSize: WidgetStatePropertyAll(
+                              Size(context.screenWidth, 50),
+                            ),
+                          ),
+                          onPressed: () async {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return ViewAllExpenses();
+                                },
+                              ),
+                            );
+                          },
+                          child: Text(
+                            "View all expenses",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(color: Colors.white),
+                          ),
                         ),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          isLoading = true;
-                          setState(() {});
-                          await _controller
-                              .submitForm(
-                                name: _nameController.text,
-                                date: getDateFormate(
-                                  DateTime.now(),
-                                  "dd-MM-yyyy",
-                                ),
-                                amount: checkValueInteger(
-                                  _amountController.text,
-                                ),
-                              )
-                              .then((_) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("Successfulle added!!"),
-                                  ),
-                                );
-                                _nameController.clear();
-                                _amountController.clear();
-                              });
-                          isLoading = false;
-                          setState(() {});
-                        }
-                      },
-                      child: Text(
-                        "Submit",
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyLarge?.copyWith(color: Colors.white),
-                      ),
+                      ],
                     ),
                   ),
                 ],

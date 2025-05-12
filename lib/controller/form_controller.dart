@@ -1,4 +1,12 @@
-abstract class FormController {
+import 'package:google_sheets/model/all_expenses.dart';
 
-  Future<void> submitForm({required String name,required String date,required int amount});
+abstract class FormController {
+  Future<void> submitForm({
+    required String name,
+    required String date,
+    required int amount,
+  });
+
+  Future<AllExpenses> getAllExpenses();
+  Stream<AllExpenses> streamAllExpenses();
 }

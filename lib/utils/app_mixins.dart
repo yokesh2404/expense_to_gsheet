@@ -26,6 +26,20 @@ mixin class AppMixins {
     return result;
   }
 
+  DateTime? parseFlexibleDate(String dateStr) {
+    try {
+      // Try ISO 8601
+      return DateTime.parse(dateStr);
+    } catch (_) {
+      try {
+        // Try DD-MM-YYYY
+        return DateFormat("dd-MM-yyyy").parse(dateStr);
+      } catch (_) {
+        return null;
+      }
+    }
+  }
+
   String getTimeFromString(String time, String format) {
     // String timeString = "08:00 PM";'HH:mm'
     DateTime parsedTime = DateFormat.jm().parse(time);

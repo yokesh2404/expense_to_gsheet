@@ -45,3 +45,10 @@ class Data {
     return data;
   }
 }
+
+class FilteredData {
+  String? date;
+  List<Data>? filteredData;
+
+  FilteredData({this.date, this.filteredData});
+}

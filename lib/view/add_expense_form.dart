@@ -172,7 +172,8 @@ class _AddExpenseFormState extends State<AddExpenseForm> with AppMixins {
                                   .then((_) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
-                                        content: Text("Successfulle added!!"),
+                                        content: Text("Successfully added!!"),
+                                        showCloseIcon: true,
                                       ),
                                     );
                                     _nameController.clear();

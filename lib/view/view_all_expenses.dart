@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_sheets/controller/form_controller.dart';
 import 'package:google_sheets/controller/form_controller_impl.dart';
+import 'package:google_sheets/services/dashed_painter.dart';
 import 'package:google_sheets/utils/app_decorations.dart';
 import 'package:google_sheets/utils/app_mixins.dart';
 
@@ -54,82 +55,135 @@ class _ViewAllExpensesState extends State<ViewAllExpenses> with AppMixins {
             return Center(child: Text("Error loading expenses"));
           }
           return SingleChildScrollView(
-            child: ListView.separated(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.all(12),
-              itemBuilder: (context, index) {
-                var data = snapshot.data!.data![index];
-                return Container(
-                  decoration: BoxDecorations.decorationWithShadow(
-                    decColor: Colors.black.withValues(alpha: 0.8),
-                  ),
-                  padding: EdgeInsets.all(12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: CustomPaint(
+                    painter: DashedBorderPainter(color: Colors.blueGrey),
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            data.name ?? "",
+                            "Total amount collected",
                             style: Theme.of(
                               context,
                             ).textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                               fontSize: 16,
-                              color: Colors.white,
+                              color: Colors.black,
                             ),
                           ),
-                          Text(
-                            getDateFormate(
-                              DateTime.parse(data.date ?? ""),
-                              "dd MMM yyyy",
+                          TweenAnimationBuilder<double>(
+                            duration: Duration(seconds: 2),
+                            tween: Tween(
+                              begin: 0.0,
+                              end: checkValueDouble(
+                                snapshot.data!.data!.fold(
+                                  0,
+                                  (a, b) => a + (b.amount ?? 0),
+                                ),
+                              ),
                             ),
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12,
-                              color: Colors.white,
-                            ),
+                            builder: (context, value, child) {
+                              return Text(
+                                '₹ ${value.toStringAsFixed(0)}',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.black,
+                                ),
+                              );
+                            },
                           ),
-
-                          // Text(
-                          //   "₹ ${data.amount ?? 0}",
-                          //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          //     fontWeight: FontWeight.w400,
-                          //     fontSize: 14,
-                          //     color: Colors.white,
-                          //   ),
-                          // ),
                         ],
                       ),
-                      TweenAnimationBuilder<double>(
-                        duration: Duration(seconds: 2),
-                        tween: Tween(
-                          begin: 0.0,
-                          end: checkValueDouble(data.amount),
-                        ),
-                        builder: (context, value, child) {
-                          return Text(
-                            '₹ ${value.toStringAsFixed(0)}',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                );
-              },
-              separatorBuilder: (context, index) => SizedBox(height: 12),
-              itemCount: snapshot.data!.data!.length,
+                ),
+                // SizedBox(height: 12),
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.all(12),
+                  itemBuilder: (context, index) {
+                    var data = snapshot.data!.data![index];
+                    return Container(
+                      decoration: BoxDecorations.decorationWithShadow(
+                        decColor: Colors.black.withValues(alpha: 0.8),
+                      ),
+                      padding: EdgeInsets.all(12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                data.name ?? "",
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                getDateFormate(
+                                  parseFlexibleDate(data.date ?? "")!,
+                                  "dd MMM yyyy",
+                                ),
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+
+                              // Text(
+                              //   "₹ ${data.amount ?? 0}",
+                              //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              //     fontWeight: FontWeight.w400,
+                              //     fontSize: 14,
+                              //     color: Colors.white,
+                              //   ),
+                              // ),
+                            ],
+                          ),
+                          TweenAnimationBuilder<double>(
+                            duration: Duration(seconds: 2),
+                            tween: Tween(
+                              begin: 0.0,
+                              end: checkValueDouble(data.amount),
+                            ),
+                            builder: (context, value, child) {
+                              return Text(
+                                '₹ ${value.toStringAsFixed(0)}',
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(height: 12),
+                  itemCount: snapshot.data!.data!.length,
+                ),
+              ],
             ),
           );
         },

@@ -1,15 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_sheets/controller/form_controller.dart';
 import 'package:google_sheets/controller/form_controller_impl.dart';
 import 'package:google_sheets/view/add_expense_form.dart';
+import 'package:google_sheets/view/qr_preview.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  MyApp({super.key});
+  Map data = {"name": "yokesh", "linkedin": "njjkhdj", "instagram": "dadas"};
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const AddExpenseForm(),
+      home: AddExpenseForm(),
+      // QrPreview(qrData: jsonEncode(data)),
       // MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
